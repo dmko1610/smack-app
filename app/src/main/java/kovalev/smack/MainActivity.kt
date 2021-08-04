@@ -1,6 +1,7 @@
 package kovalev.smack
 
 import android.os.Bundle
+import android.view.View
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -41,5 +42,17 @@ class MainActivity : AppCompatActivity() {
   override fun onSupportNavigateUp(): Boolean {
     val navController = findNavController(R.id.nav_host_fragment_content_main)
     return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+  }
+
+  fun loginBtnNavClicked(view: View) {
+
+  }
+
+  fun addChannelClicked(view: View) {
+
+  }
+
+  fun sendMsgBtnClicked(view: View) {
+
   }
 }
