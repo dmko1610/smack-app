@@ -1,9 +1,10 @@
-package kovalev.smack
+package kovalev.smack.Controller
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import kovalev.smack.R
 
 class LoginActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
