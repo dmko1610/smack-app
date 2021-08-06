@@ -27,7 +27,7 @@ object AuthService {
     val requestBody = jsonBody.toString()
 
     val registerRequest =
-      object : StringRequest(Request.Method.POST, URL_REGISTER, Response.Listener { _ ->
+      object : StringRequest(Method.POST, URL_REGISTER, Response.Listener { _ ->
         complete(true)
       }, Response.ErrorListener { error ->
         Log.d("ERROR", "Could not register user: $error")
@@ -57,6 +57,7 @@ object AuthService {
           userEmail = response.getString("user")
           authToken = response.getString("token")
           isLoggedIn = true
+          complete(true)
         } catch (e: JSONException) {
           Log.d("JSON", "EXC:" + e.localizedMessage)
           complete(false)
@@ -98,7 +99,7 @@ object AuthService {
           UserDataService.email = response.getString("email")
           UserDataService.avatarColor = response.getString("avatarColor")
           UserDataService.avatarName = response.getString("avatarName")
-          UserDataService.id = response.getString("id")
+          UserDataService.id = response.getString("_id")
           complete(true)
         } catch (e: JSONException) {
           Log.d("JSON", "EXC:" + e.localizedMessage)

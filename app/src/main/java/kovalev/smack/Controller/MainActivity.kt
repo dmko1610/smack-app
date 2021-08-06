@@ -1,6 +1,10 @@
 package kovalev.smack.Controller
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import com.google.android.material.navigation.NavigationView
@@ -11,7 +15,12 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import kotlinx.android.synthetic.main.nav_header_main.*
 import kovalev.smack.R
+import kovalev.smack.Services.AuthService
+import kovalev.smack.Services.UserDataService
+import kovalev.smack.Utilities.BROADCAST_USER_DATA_CHANGE
 import kovalev.smack.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -39,6 +48,27 @@ class MainActivity : AppCompatActivity() {
     )
     setupActionBarWithNavController(navController, appBarConfiguration)
     navView.setupWithNavController(navController)
+
+    LocalBroadcastManager.getInstance(this).registerReceiver(
+      userDataChangeReceiver, IntentFilter(
+        BROADCAST_USER_DATA_CHANGE
+      )
+    )
+
+  }
+
+  private val userDataChangeReceiver = object : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+      if (AuthService.isLoggedIn) {
+        userNameNavHeader.text = UserDataService.name
+        userEmailNavHeader.text = UserDataService.email
+        val resourceId =
+          resources.getIdentifier(UserDataService.avatarName, "drawable", packageName)
+        userImageNavHeader.setImageResource(resourceId)
+        userImageNavHeader.setBackgroundColor(UserDataService.returnAvatarColor(UserDataService.avatarColor))
+        loginBtnNavHeader.text = "Logout"
+      }
+    }
   }
 
   override fun onSupportNavigateUp(): Boolean {
@@ -47,9 +77,17 @@ class MainActivity : AppCompatActivity() {
   }
 
   fun loginBtnNavClicked(view: View) {
-    val loginIntent = Intent(this, LoginActivity::class.java)
-    startActivity(loginIntent)
-
+    if (AuthService.isLoggedIn) {
+      UserDataService.logout()
+      userNameNavHeader.text = "Login"
+      userEmailNavHeader.text = ""
+      userImageNavHeader.setImageResource(R.drawable.profiledefault)
+      userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
+      loginBtnNavHeader.text = "Login"
+    } else {
+      val loginIntent = Intent(this, LoginActivity::class.java)
+      startActivity(loginIntent)
+    }
   }
 
   fun addChannelClicked(view: View) {
