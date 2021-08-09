@@ -38,7 +38,7 @@ object AuthService {
     App.prefs.requestQueue.add(registerRequest)
   }
 
-  fun loginUser(context: Context, email: String, password: String, complete: (Boolean) -> Unit) {
+  fun loginUser(email: String, password: String, complete: (Boolean) -> Unit) {
     val jsonBody = JSONObject()
     jsonBody.put("email", email)
     jsonBody.put("password", password)
@@ -71,7 +71,6 @@ object AuthService {
   }
 
   fun createUser(
-    context: Context,
     name: String,
     email: String,
     avatarName: String,
@@ -121,24 +120,29 @@ object AuthService {
 
   fun findUserByEmail(context: Context, complete: (Boolean) -> Unit) {
     val findUserRequest =
-      object : JsonObjectRequest(Method.GET, "$URL_GET_USER${App.prefs.userEmail}", null, Response.Listener {
-        try {
-          UserDataService.name = it.getString("name")
-          UserDataService.email = it.getString("email")
-          UserDataService.avatarName = it.getString("avatarName")
-          UserDataService.avatarColor = it.getString("avatarColor")
-          UserDataService.id = it.getString("_id")
+      object : JsonObjectRequest(
+        Method.GET,
+        "$URL_GET_USER${App.prefs.userEmail}",
+        null,
+        Response.Listener {
+          try {
+            UserDataService.name = it.getString("name")
+            UserDataService.email = it.getString("email")
+            UserDataService.avatarName = it.getString("avatarName")
+            UserDataService.avatarColor = it.getString("avatarColor")
+            UserDataService.id = it.getString("_id")
 
-          val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
-          LocalBroadcastManager.getInstance(context).sendBroadcast(userDataChange)
-          complete(true)
-        } catch (e: JSONException) {
-          Log.d("JSON", "EXC: " + e.localizedMessage)
-        }
-      }, Response.ErrorListener {
-        Log.d("ERROR", "Could not find user.")
-        complete(false)
-      }) {
+            val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
+            LocalBroadcastManager.getInstance(context).sendBroadcast(userDataChange)
+            complete(true)
+          } catch (e: JSONException) {
+            Log.d("JSON", "EXC: " + e.localizedMessage)
+          }
+        },
+        Response.ErrorListener {
+          Log.d("ERROR", "Could not find user.")
+          complete(false)
+        }) {
         override fun getBodyContentType(): String {
           return "application/json; charset=utf-8"
         }

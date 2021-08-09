@@ -2,13 +2,11 @@ package kovalev.smack.Controller
 
 import android.content.Context
 import android.content.Intent
-import android.hardware.input.InputManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_create_user.*
 import kotlinx.android.synthetic.main.activity_login.*
 import kovalev.smack.R
 import kovalev.smack.Services.AuthService
@@ -26,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
     val password = loginPasswordTxt.text.toString()
     hideKeyboard()
     if (email.isNotEmpty() && password.isNotEmpty()) {
-      AuthService.loginUser(this, email, password) { loginSuccess ->
+      AuthService.loginUser(email, password) { loginSuccess ->
         if (loginSuccess) {
           AuthService.findUserByEmail(this) { findSuccess ->
             if (findSuccess) {
