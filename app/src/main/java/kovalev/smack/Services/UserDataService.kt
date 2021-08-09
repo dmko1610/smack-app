@@ -1,6 +1,7 @@
 package kovalev.smack.Services
 
 import android.graphics.Color
+import kovalev.smack.Controller.App
 import java.util.*
 
 object UserDataService {
@@ -16,9 +17,9 @@ object UserDataService {
     avatarName = ""
     name = ""
     email = ""
-    AuthService.authToken = ""
-    AuthService.userEmail = ""
-    AuthService.isLoggedIn = false
+    App.prefs.authToken = ""
+    App.prefs.userEmail = ""
+    App.prefs.isLoggedIn = false
   }
 
   fun returnAvatarColor(components: String): Int {
