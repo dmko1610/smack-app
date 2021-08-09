@@ -2,10 +2,8 @@ package kovalev.smack.Services
 
 import android.content.Context
 import android.content.Intent
-import android.service.autofill.UserData
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
@@ -13,8 +11,6 @@ import com.android.volley.toolbox.Volley
 import kovalev.smack.Utilities.*
 import org.json.JSONException
 import org.json.JSONObject
-import java.net.URLClassLoader
-import java.nio.file.attribute.UserDefinedFileAttributeView
 
 object AuthService {
 
@@ -47,7 +43,6 @@ object AuthService {
   }
 
   fun loginUser(context: Context, email: String, password: String, complete: (Boolean) -> Unit) {
-
     val jsonBody = JSONObject()
     jsonBody.put("email", email)
     jsonBody.put("password", password)
