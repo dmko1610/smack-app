@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     channelAdapter =
       ArrayAdapter(this, android.R.layout.simple_list_item_1, MessageService.channels)
     channel_list.adapter = channelAdapter
+
     messageAdapter = MessageAdapter(this, MessageService.messages)
     messageListView.adapter = messageAdapter
     val layoutManager = LinearLayoutManager(this)
@@ -84,6 +85,11 @@ class MainActivity : AppCompatActivity() {
     socket.on("channelCreated", onNewChannel)
     socket.on("messageCreated", onNewMessage)
     setupAdapters()
+    LocalBroadcastManager.getInstance(this).registerReceiver(
+      userDataChangeReceiver, IntentFilter(
+        BROADCAST_USER_DATA_CHANGE
+      )
+    )
 
     channel_list.setOnItemClickListener { _, _, i, _ ->
       selectedChannel = MessageService.channels[i]
@@ -92,19 +98,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     if (App.prefs.isLoggedIn) {
-      AuthService.findUserByEmail(this) {
-
-      }
+      AuthService.findUserByEmail(this) {}
     }
-  }
-
-  override fun onResume() {
-    LocalBroadcastManager.getInstance(this).registerReceiver(
-      userDataChangeReceiver, IntentFilter(
-        BROADCAST_USER_DATA_CHANGE
-      )
-    )
-    super.onResume()
   }
 
   override fun onDestroy() {
@@ -161,11 +156,12 @@ class MainActivity : AppCompatActivity() {
       UserDataService.logout()
       channelAdapter.notifyDataSetChanged()
       messageAdapter.notifyDataSetChanged()
-      userNameNavHeader.text = "Login"
+      userNameNavHeader.text = ""
       userEmailNavHeader.text = ""
       userImageNavHeader.setImageResource(R.drawable.profiledefault)
       userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
       loginBtnNavHeader.text = "Login"
+      mainChannelName.text = "Please Log In"
     } else {
       val loginIntent = Intent(this, LoginActivity::class.java)
       startActivity(loginIntent)
